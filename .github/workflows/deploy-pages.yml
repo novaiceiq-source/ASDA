@@ -18,6 +18,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+      VITE_CONVEX_SITE_URL: ${{ vars.VITE_CONVEX_SITE_URL }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
@@ -31,8 +34,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build site
-        run: npm run build
+      - name: Deploy Convex backend and build site
+        run: npx convex deploy --cmd "npm run build" --cmd-url-env-var-name VITE_CONVEX_URL
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
