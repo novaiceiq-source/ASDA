@@ -20,7 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
-      VITE_CONVEX_SITE_URL: ${{ vars.VITE_CONVEX_SITE_URL }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
