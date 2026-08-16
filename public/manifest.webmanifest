@@ -1,0 +1,28 @@
+{
+  "id": "/ASDA/",
+  "name": "شركة نوڤا لإنتاج الثلج البلوري",
+  "short_name": "شركة نوڤا",
+  "description": "نظام المخزون والمحاسبة لشركة نوڤا لإنتاج الثلج البلوري",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/ASDA/",
+  "scope": "/ASDA/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#092c3a",
+  "theme_color": "#092c3a",
+  "icons": [
+    {
+      "src": "/ASDA/icons/nova-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/ASDA/icons/nova-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
