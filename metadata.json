@@ -1,0 +1,6 @@
+{
+  "name": "نظام نوڤا للمخزون",
+  "description": "نظام محاسبة ومخزون لشركة نوڤا لإنتاج الثلج البلوري.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
