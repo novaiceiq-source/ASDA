@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Minus, Package, DollarSign, Archive, Check, Droplets, ChevronLeft, Save, Sun, Moon, Clock, Settings, Users, ShieldAlert, Lock, UserPlus, Phone, Edit2, Trash2, X, ShoppingCart , Camera, Image as ImageIcon , BarChart3, PieChart, TrendingUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useMutation, useQuery } from 'convex/react';
+import { api } from './convex/_generated/api';
 
 interface InventoryItem {
   id: string;
@@ -110,11 +112,49 @@ export default function App() {
   // Toast State
   const [toast, setToast] = useState<{show: boolean, message: string, type: 'success' | 'error' | 'info'}>({ show: false, message: '', type: 'info' });
   const [confirmModal, setConfirmModal] = useState<{isOpen: boolean, message: string, onConfirm: () => void}>({isOpen: false, message: '', onConfirm: () => {}});
+  const remoteAppState = useQuery(api.appState.get);
+  const saveAppState = useMutation(api.appState.save);
+  const hasLoadedRemoteState = useRef(false);
+  const lastSyncedState = useRef<string | null>(null);
 
   const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
     setToast({ show: true, message, type });
     setTimeout(() => setToast(prev => ({ ...prev, show: false })), 3000);
   };
+
+  useEffect(() => {
+    if (remoteAppState === undefined) return;
+
+    const serialized = JSON.stringify(remoteAppState);
+    if (serialized === lastSyncedState.current) return;
+
+    lastSyncedState.current = serialized;
+    setItems(remoteAppState.items);
+    setTransactions(remoteAppState.transactions);
+    setShifts(remoteAppState.shifts);
+    setDelegates(remoteAppState.delegates);
+    setExpenses(remoteAppState.expenses);
+    setInvoices(remoteAppState.invoices);
+    hasLoadedRemoteState.current = true;
+  }, [remoteAppState]);
+
+  useEffect(() => {
+    if (!hasLoadedRemoteState.current) return;
+
+    const data = { items, transactions, shifts, delegates, expenses, invoices };
+    const serialized = JSON.stringify(data);
+    if (serialized === lastSyncedState.current) return;
+
+    const timeout = window.setTimeout(() => {
+      lastSyncedState.current = serialized;
+      void saveAppState({ data }).catch(() => {
+        lastSyncedState.current = null;
+        showToast('تعذر حفظ البيانات في قاعدة البيانات', 'error');
+      });
+    }, 350);
+
+    return () => window.clearTimeout(timeout);
+  }, [items, transactions, shifts, delegates, expenses, invoices, saveAppState]);
 
   useEffect(() => {
     if (isDarkMode) {
