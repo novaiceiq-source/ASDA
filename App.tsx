@@ -86,7 +86,14 @@ export default function App() {
   // Accounts Lock State
 
   const [isReportsUnlocked, setIsReportsUnlocked] = useState(false);
-  const [adminPin, setAdminPin] = useState(() => localStorage.getItem('nova_admin_pin') || '1234');
+  const [adminPin, setAdminPin] = useState(() => {
+    const storedPin = localStorage.getItem('nova_admin_pin');
+    if (!storedPin || storedPin === '1234') {
+      localStorage.setItem('nova_admin_pin', '1001');
+      return '1001';
+    }
+    return storedPin;
+  });
   const [reportsPin, setReportsPin] = useState('');
   const [pinError, setPinError] = useState(false);
   const [reportsView, setReportsView] = useState<'menu' | 'shifts' | 'inventory_settings' | 'shift_details' | 'delegates_settings' | 'financial' | 'delegate_stats' | 'delegate_stats_detail' | 'change_pin'>('menu');
